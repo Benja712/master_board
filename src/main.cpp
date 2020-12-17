@@ -27,7 +27,7 @@ const byte m6 = 14;
 const byte m7 = 15;
 const byte counter = 16;
 const byte wenable = 10;
-const byte buffer = 3;
+//const byte buffer = 3;
 
 //variable de tiempo y creacion de clientes wifi y mqtts
 unsigned long lastMillis = 0;
@@ -55,8 +55,7 @@ void connect() {
   }
 
   Serial.println("\nconnected!");
-  client.subscribe("password/send/part1");//subscripcion al topico send
-  client.subscribe("password/send/part2");//subscripcion al topico send
+  client.subscribe("password/send");//subscripcion al topico send
   client.subscribe("password/change/part1"); //subscripcion al topico change
   client.subscribe("password/change/part2"); //subscripcion al topico change
 }
@@ -144,21 +143,39 @@ void processMsg(String msg ){
 void messageReceived(String &topic, String &payload) {
   if(topic == "password/change/part1"){
     Serial.println("incoming: " + topic + " - " + payload);
-    digitalWrite(buffer, HIGH);
+    //digitalWrite(buffer, LOW);
     processMsg(payload);
-    digitalWrite(buffer, LOW);
+    //digitalWrite(buffer, HIGH);
+    digitalWrite(m0, HIGH);
+    digitalWrite(m1, HIGH);
+    digitalWrite(m2, HIGH);
+    digitalWrite(m3, HIGH);
+    digitalWrite(m4, HIGH);
+    digitalWrite(m5, HIGH);
+    digitalWrite(m6, HIGH);
+    digitalWrite(m7, HIGH);
   }
   if(topic == "password/change/part2"){
     Serial.println("incoming: " + topic + " - " + payload);
-    digitalWrite(buffer, HIGH);
+    //digitalWrite(buffer, LOW);
     processMsg(payload);
-    digitalWrite(buffer, LOW);
+    //digitalWrite(buffer, HIGH);
+    digitalWrite(m0, HIGH);
+    digitalWrite(m1, HIGH);
+    digitalWrite(m2, HIGH);
+    digitalWrite(m3, HIGH);
+    digitalWrite(m4, HIGH);
+    digitalWrite(m5, HIGH);
+    digitalWrite(m6, HIGH);
+    digitalWrite(m7, HIGH);
   }
-  if(topic == "password/send/part1"){
+  if(topic == "password/send"){
     Serial.println("incoming: " + topic + " - " + payload);
-  }
-  if(topic == "password/send/part2"){
-    Serial.println("incoming: " + topic + " - " + payload);
+    for(byte j = 0; j < 16; j++){
+      digitalWrite(counter, LOW);
+      delay(500);
+      digitalWrite(counter, HIGH);
+    }
   }
 }
 
@@ -176,11 +193,11 @@ void setup() {
   pinMode(m6, OUTPUT);
   pinMode(m7, OUTPUT);
   pinMode(counter, OUTPUT);
-  pinMode(buffer, OUTPUT);
+  //pinMode(buffer, OUTPUT);
   pinMode(wenable, OUTPUT);
   digitalWrite(wenable, HIGH);
   digitalWrite(counter, HIGH);
-  digitalWrite(buffer, LOW);
+  //digitalWrite(buffer, HIGH);
   WiFi.begin(ssid, pass);
   client.begin(mqtt_server, mqtt_port, net);//establece los parametros de la ubicacion del servidor mqtt
   client.onMessage(messageReceived);
